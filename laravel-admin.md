@@ -5,15 +5,15 @@
 
 namespace App\Models;
 
-use Encore\Admin\Traits\AdminBuilder;
+use Encore\Admin\Traits\AdminBuilder; //注意这里引用
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-	use AdminBuilder;
+	use AdminBuilder; //注意这里引用
 	public function comments()
     {
-        return $this->hasMany(Comment::class, 'post_id');
+        return $this->hasMany(Comment::class, 'post_id'); //注意这里是子表外键
     }
 }
 ```
@@ -25,15 +25,15 @@ class Post extends Model
 
 namespace App\Models;
 
-use Encore\Admin\Traits\AdminBuilder;
+use Encore\Admin\Traits\AdminBuilder; //注意这里引用
 use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-	use AdminBuilder;
+	use AdminBuilder; //注意这里引用
 	public function post()
     {
-        return $this->belongsTo(Post::class, 'post_id');
+        return $this->belongsTo(Post::class, 'post_id'); //这里是子表外键
     }
 }
 ```
@@ -294,7 +294,7 @@ class CommentController extends Controller
         $show->id('ID');
         $show->name('name');
         $show->post_id('post_id');
-		$show->post('post', function ($post) {
+		$show->post('post', function ($post) { //注意这里引用了外部信息
 
 			$post->setResource('admin/posts');
 
@@ -320,8 +320,8 @@ class CommentController extends Controller
 
         $form->display('ID');
         $form->text('name', 'name');
-        //$form->select('post_id', 'post_id')->options(Post::all()->pluck('title', 'id'));
-		$form->belongsTo('post_id', Posts::class, 'post');
+        //$form->select('post_id', 'post_id')->options(Post::all()->pluck('title', 'id')); //这里是下拉框选择
+		$form->belongsTo('post_id', Posts::class, 'post'); //注意这里是模态选择
         $form->text('content', 'content');
         $form->display(trans('admin.created_at'));
         $form->display(trans('admin.updated_at'));
@@ -332,6 +332,7 @@ class CommentController extends Controller
 ```
 
 5. Posts.php selectable
+模态选择对话框内容
 
 ```php
 <?php
