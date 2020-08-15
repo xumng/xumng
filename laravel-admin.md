@@ -19,6 +19,8 @@ class Post extends Model
 ```
 
 2. Comment.php model
+
+```php
 <?php
 
 namespace App\Models;
