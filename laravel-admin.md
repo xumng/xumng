@@ -16,6 +16,7 @@ class Post extends Model
         return $this->hasMany(Comment::class, 'post_id');
     }
 }
+```
 
 2. Comment.php model
 <?php
