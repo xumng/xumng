@@ -1,6 +1,6 @@
 1. Post.php model
 
-
+```php
 <?php
 
 namespace App\Models;
@@ -33,10 +33,11 @@ class Comment extends Model
         return $this->belongsTo(Post::class, 'post_id');
     }
 }
-
+```
 
 3. PostController.php controller
 
+```php
 <?php
 
 namespace App\Admin\Controllers;
@@ -177,9 +178,11 @@ class PostController extends Controller
         return $form;
     }
 }
+```
 
 4. CommentController.php controller
 
+```php
 <?php
 
 namespace App\Admin\Controllers;
@@ -323,9 +326,11 @@ class CommentController extends Controller
         return $form;
     }
 }
+```
 
 5. Posts.php selectable
 
+```php
 <?php
 
 namespace App\Admin\Selectable;
@@ -350,3 +355,4 @@ class Posts extends Selectable
         });
     }
 }
+```
