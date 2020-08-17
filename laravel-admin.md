@@ -360,3 +360,25 @@ class Posts extends Selectable
     }
 }
 ```
+
+6. 折叠与模态
+
+```php
+    protected function grid()
+    {
+        $grid = new Grid(new Post);
+
+        $grid->id('ID');
+        $grid->title('title')->expand(function ($model) {
+            $comments = $model->comments()->take(10)->get()->map(function ($comment) {
+                 return $comment->only(['id', 'name']);
+             });
+            return new Table(['ID', 'title'], $comments->toArray());
+        });
+        $grid->content('content');
+        $grid->created_at(trans('admin.created_at'));
+        $grid->updated_at(trans('admin.updated_at'));
+
+        return $grid;
+    }
+    ```
