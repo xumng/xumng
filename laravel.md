@@ -15,15 +15,15 @@ https://github.com/viralsolani/laravel-adminpanel
 
 Windows 服务器如果安装后没效果，请检查网站根目录下是否存在如图所示的静态资源。如果不存在，请在站点根目录下手动创建这样一个文件夹 public\vendor\zhaiduting\column-relation，然后将vendor\zhaiduting\column-relation\dist下的 relate.js 和 relate.css 复制到这个文件夹下就可以了。
 
-'''php
+```php
 $grid = new Grid(new Category());
 
 $grid->column('name', '类别')
      ->relate('topics', ['id', 'title'=>'话题']);
 
-'''
+```
 
-'''php
+```php
 $grid = new Grid(new Role());
 
 $grid->column('name', '角色名称')
@@ -36,4 +36,4 @@ $grid->column('name', '角色名称')
             "</a>";
     })
 ;
-'''
+```
