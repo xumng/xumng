@@ -37,3 +37,104 @@ $grid->column('name', '角色名称')
     })
 ;
 ```
+app\Admin\Actions\VerSelector.php
+```php
+<?php
+
+namespace App\Admin\Actions;
+
+use Session;
+use Illuminate\Support\Facades\URL;
+use App\Models\Post;
+use App\Models\Comment;
+use Encore\Admin\Actions\Action;
+use Illuminate\Http\Request;
+use App\Admin\Selectable\Posts;
+
+class VerSelector extends Action
+{
+    protected $selector = '.verselector';
+    protected $product;
+    protected $version;
+    public $name = 'Select product and version';
+
+    public function handle(Request $request)
+    {
+        session(['product_id' => $request->get('product_id'),'version_id' => $request->get('version_id')]);
+        //Session::forget('version_id');
+        $this->render();
+        //return $this->response()->success($request->get('product_id'))->topCenter()->refresh();
+        //return $this->response()->redirect(URL::route('admin.home'));
+        return $this->response()->location(URL::route('admin.home'));
+        //return $this->response()->success($request->get('product_id'))->topCenter()->refresh();
+    }
+
+    public function form()
+    {
+        if (Session::has('product_id') && Session::has('version_id'))
+        {
+            $this->select('product_id', 'product')->options(Post::all()->pluck('title', 'id'))->value(session('product_id'))->rules('required')->load('version_id', 'api/comment');
+            //use App\Admin\Selectable\Users;
+
+            //$this->belongsTo('post_id', Comments::class, 'version');
+            //$this->select('version_id', 'version')->value(session('version_id'))->rules('required');
+            $this->select('version_id', 'version')->options(function ($id) {
+
+                return Comment::options($id);
+    
+            })->rules('required');
+        }
+        else
+        {
+            $this->select('product_id', 'product')->options(Post::all()->pluck('title', 'id'))->rules('required');
+            $this->select('version_id', 'version')->options(Comment::all()->pluck('name', 'id'))->rules('required');
+        }
+    }
+
+    public function html()
+    {
+        if (Session::has('product_id') && Session::has('version_id'))
+        {
+            $this->event = 'click';
+            $this->product = Post::find(session('product_id'))->title;
+            $this->version = Comment::find(session('version_id'))->name;
+            return <<<HTML
+<li>
+    <a class="verselector" href="javascript:void(0);">
+      <i class="fa fa-window-restore"></i>
+      <span>Product:{$this->product } </span>
+      <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      <span>Version:{$this->version} Change </span>
+      <i class="fa fa-angle-double-down"></i>
+    </a>
+</li>
+HTML;
+        }
+        else
+        {
+            $this->product = '';
+            $this->version = '';
+            return <<<HTML
+<li>
+    <a class="verselector" href="javascript:void(0);">
+      <i class="fa fa-window-restore"></i>
+      <span>Product:{$this->product } </span>
+      <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      <span>Version:{$this->version} Change </span>
+      <i class="fa fa-angle-double-down"></i>
+    </a>
+</li>
+HTML;
+        }
+        
+    }
+}
+
+```
+
+bootstrap.php
+```php
+    $navbar->right(new Actions\VerSelector());
+    $navbar->right(new \App\Admin\Extensions\Nav\Links());
+    
+```    
