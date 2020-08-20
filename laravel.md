@@ -71,18 +71,16 @@ class VerSelector extends Action
 
     public function form()
     {
+        
         if (Session::has('product_id') && Session::has('version_id'))
         {
-            $this->select('product_id', 'product')->options(Post::all()->pluck('title', 'id'))->value(session('product_id'))->rules('required')->load('version_id', 'api/comment');
-            //use App\Admin\Selectable\Users;
+            $this->select('product_id', 'product')->options(Post::all()->pluck('title', 'id'))
+            ->value(session('product_id'))->rules('required')
+            ->load('version_id', 'api/comment');
 
-            //$this->belongsTo('post_id', Comments::class, 'version');
-            //$this->select('version_id', 'version')->value(session('version_id'))->rules('required');
             $this->select('version_id', 'version')->options(function ($id) {
-
                 return Comment::options($id);
-    
-            })->rules('required');
+            })->value(session('version_id'))->rules('required');
         }
         else
         {
@@ -137,10 +135,36 @@ bootstrap.php
     $navbar->right(new Actions\VerSelector());
     $navbar->right(new \App\Admin\Extensions\Nav\Links());
     
-```    
+```   
 
+app\Admin\Controllers\CommentController.php
+```php
+    public function comment(Request $request)
+    {
+        $postId = $request->get('q');
 
-modal 窗口联动问题
+        return Comment::Comment()->where('post_id',$postId)->get(['id', DB::raw('name as text')]);
+    }
+```
+
+创建comment的方法
+app\Models\Comment.php
+```php
+    public function scopeComment($query)
+    {
+        return $query;
+    }
+    public static function options($id)
+    {
+        if (! $self = static::find($id)) {
+            return [];
+        }
+
+        return $self->where('post_id',$id)->pluck('name', 'id');
+    }
+```
+
+解决modal 窗口联动问题
 vendor\encore\laravel-admin\resources\views\actions\form\modal.blade.php
 
 ```php
