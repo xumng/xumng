@@ -250,3 +250,6 @@ vendor\encore\laravel-admin\resources\views\actions\form\modal.blade.php
 
 使用模态窗口编辑
 https://learnku.com/docs/dcat-admin/1.x/tools-form/8125
+
+laravel admin 也支持feildset布局，具体可以参考：
+https://learnku.com/docs/dcat-admin/1.x/table-layout/8822#35e387
