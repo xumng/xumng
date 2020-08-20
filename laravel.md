@@ -216,3 +216,37 @@ vendor\encore\laravel-admin\resources\views\actions\form\modal.blade.php
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 ```
+
+编辑页面显示列表
+```php
+
+    /**
+     * Edit interface.
+     *
+     * @param $id
+     * @return Content
+     */
+    public function edit($id, Content $content)
+    {
+        return $content
+            ->title('header')
+            ->description('description')
+            ->row($this->form()->edit($id))
+            ->row(Admin::grid(PostComment::class, function (Grid $grid) use ($id) {
+
+                $grid->setName('comments')
+                    ->setTitle('Comments')
+                    ->setRelation(Post::find($id)->comments())
+                    ->resource('/demo/post-comments');
+
+                $grid->id();
+                $grid->content();
+                $grid->created_at();
+                $grid->updated_at();
+
+            }));
+    }
+```   
+
+使用模态窗口编辑
+https://learnku.com/docs/dcat-admin/1.x/tools-form/8125
