@@ -130,6 +130,32 @@ HTML;
 
 ```
 
+更简洁的写法
+```php
+    public function form()
+    {
+        
+        if (Session::has('product_id') && Session::has('version_id'))
+        {
+            $this->select('product_id', 'product')->options(Post::all()->pluck('title', 'id'))
+            ->value(session('product_id'))->rules('required')
+            ->load('version_id', 'api/comment');
+
+            // $this->select('version_id', 'version')->options(function ($id) {
+            //     return Comment::options($id);
+            // })->value(session('version_id'))->rules('required');
+            $this->select('version_id', 'version')->options(function ($id) {
+                return Comment::Comment()->where('post_id',$id)->pluck('name', 'id');
+            })->value(session('version_id'))->rules('required');
+        }
+        else
+        {
+            $this->select('product_id', 'product')->options(Post::all()->pluck('title', 'id'))->rules('required');
+            $this->select('version_id', 'version')->options(Comment::all()->pluck('name', 'id'))->rules('required');
+        }
+    }
+```
+
 bootstrap.php
 ```php
     $navbar->right(new Actions\VerSelector());
